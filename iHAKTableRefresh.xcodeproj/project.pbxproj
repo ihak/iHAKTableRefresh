@@ -1,0 +1,297 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E4DC08BA1DB5ED37009B7F85 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DC08B91DB5ED37009B7F85 /* AppDelegate.swift */; };
+		E4DC08BC1DB5ED37009B7F85 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DC08BB1DB5ED37009B7F85 /* ViewController.swift */; };
+		E4DC08BF1DB5ED37009B7F85 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4DC08BD1DB5ED37009B7F85 /* Main.storyboard */; };
+		E4DC08C11DB5ED37009B7F85 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4DC08C01DB5ED37009B7F85 /* Assets.xcassets */; };
+		E4DC08C41DB5ED37009B7F85 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4DC08C21DB5ED37009B7F85 /* LaunchScreen.storyboard */; };
+		E4DC08CC1DB5EFF0009B7F85 /* iHAKTableRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DC08CB1DB5EFF0009B7F85 /* iHAKTableRefresh.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E4DC08B61DB5ED37009B7F85 /* iHAKTableRefresh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iHAKTableRefresh.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4DC08B91DB5ED37009B7F85 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E4DC08BB1DB5ED37009B7F85 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E4DC08BE1DB5ED37009B7F85 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E4DC08C01DB5ED37009B7F85 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E4DC08C31DB5ED37009B7F85 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E4DC08C51DB5ED37009B7F85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = iHAKTableRefresh/Info.plist; sourceTree = "<group>"; };
+		E4DC08CB1DB5EFF0009B7F85 /* iHAKTableRefresh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iHAKTableRefresh.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E4DC08B31DB5ED37009B7F85 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E4DC08AD1DB5ED37009B7F85 = {
+			isa = PBXGroup;
+			children = (
+				E4DC08B81DB5ED37009B7F85 /* iHAKTableRefresh */,
+				E4DC08B71DB5ED37009B7F85 /* Products */,
+				E4DC08C51DB5ED37009B7F85 /* Info.plist */,
+			);
+			sourceTree = "<group>";
+		};
+		E4DC08B71DB5ED37009B7F85 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E4DC08B61DB5ED37009B7F85 /* iHAKTableRefresh.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E4DC08B81DB5ED37009B7F85 /* iHAKTableRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				E4DC08B91DB5ED37009B7F85 /* AppDelegate.swift */,
+				E4DC08BB1DB5ED37009B7F85 /* ViewController.swift */,
+				E4DC08BD1DB5ED37009B7F85 /* Main.storyboard */,
+				E4DC08C01DB5ED37009B7F85 /* Assets.xcassets */,
+				E4DC08C21DB5ED37009B7F85 /* LaunchScreen.storyboard */,
+				E4DC08CB1DB5EFF0009B7F85 /* iHAKTableRefresh.swift */,
+			);
+			path = iHAKTableRefresh;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E4DC08B51DB5ED37009B7F85 /* iHAKTableRefresh */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4DC08C81DB5ED37009B7F85 /* Build configuration list for PBXNativeTarget "iHAKTableRefresh" */;
+			buildPhases = (
+				E4DC08B21DB5ED37009B7F85 /* Sources */,
+				E4DC08B31DB5ED37009B7F85 /* Frameworks */,
+				E4DC08B41DB5ED37009B7F85 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iHAKTableRefresh;
+			productName = iHAKTableRefresh;
+			productReference = E4DC08B61DB5ED37009B7F85 /* iHAKTableRefresh.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E4DC08AE1DB5ED37009B7F85 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "Hassan Ahmed";
+				TargetAttributes = {
+					E4DC08B51DB5ED37009B7F85 = {
+						CreatedOnToolsVersion = 7.3;
+					};
+				};
+			};
+			buildConfigurationList = E4DC08B11DB5ED37009B7F85 /* Build configuration list for PBXProject "iHAKTableRefresh" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E4DC08AD1DB5ED37009B7F85;
+			productRefGroup = E4DC08B71DB5ED37009B7F85 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E4DC08B51DB5ED37009B7F85 /* iHAKTableRefresh */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E4DC08B41DB5ED37009B7F85 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4DC08C41DB5ED37009B7F85 /* LaunchScreen.storyboard in Resources */,
+				E4DC08C11DB5ED37009B7F85 /* Assets.xcassets in Resources */,
+				E4DC08BF1DB5ED37009B7F85 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E4DC08B21DB5ED37009B7F85 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4DC08BC1DB5ED37009B7F85 /* ViewController.swift in Sources */,
+				E4DC08CC1DB5EFF0009B7F85 /* iHAKTableRefresh.swift in Sources */,
+				E4DC08BA1DB5ED37009B7F85 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E4DC08BD1DB5ED37009B7F85 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E4DC08BE1DB5ED37009B7F85 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		E4DC08C21DB5ED37009B7F85 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E4DC08C31DB5ED37009B7F85 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E4DC08C61DB5ED37009B7F85 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E4DC08C71DB5ED37009B7F85 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E4DC08C91DB5ED37009B7F85 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = iHAKTableRefresh/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.arpatech.iHAKTableRefresh;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E4DC08CA1DB5ED37009B7F85 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = iHAKTableRefresh/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.arpatech.iHAKTableRefresh;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E4DC08B11DB5ED37009B7F85 /* Build configuration list for PBXProject "iHAKTableRefresh" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4DC08C61DB5ED37009B7F85 /* Debug */,
+				E4DC08C71DB5ED37009B7F85 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4DC08C81DB5ED37009B7F85 /* Build configuration list for PBXNativeTarget "iHAKTableRefresh" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4DC08C91DB5ED37009B7F85 /* Debug */,
+				E4DC08CA1DB5ED37009B7F85 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E4DC08AE1DB5ED37009B7F85 /* Project object */;
+}
