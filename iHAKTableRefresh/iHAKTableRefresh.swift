@@ -60,7 +60,23 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         case .TopAndBottom:
             topViewEnabled = true
             bottomViewEnabled = true
+            createTopView()
         }
+    }
+    
+    func createTopView() {
+        let topView = UIView()
+        topView.backgroundColor = UIColor.redColor()
+        topView.translatesAutoresizingMaskIntoConstraints = false
+        self.tableView.addSubview(topView)
+        let horizontalConstriant = "H:|[topView(\(CGRectGetWidth(self.tableView.frame)))]|"
+        let verticalConstraint = "V:|-(\(-topViewHeight))-[topView(\(topViewHeight))]"
+        self.tableView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(horizontalConstriant, options: NSLayoutFormatOptions(rawValue:0), metrics: nil, views: ["topView":topView]))
+        self.tableView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(verticalConstraint, options: NSLayoutFormatOptions(rawValue:0), metrics: nil, views: ["topView":topView]))
+    }
+    
+    func createBottomView() {
+        
     }
     
     func updateTopRefreshState(state: RefreshState) {
