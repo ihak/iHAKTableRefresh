@@ -19,6 +19,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: CellIdentifier)
         
         tableRefresh = iHAKTableRefresh(tableView: tableView, refreshType: .TopAndBottom, delegate: self)
+        tableRefresh.defaultContentOffset = -64.0
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,6 +37,25 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         cell?.textLabel?.text = "Cell \(indexPath.row)"
         return cell!
     }
-
+    
+    //MARK: - iHAKTableRefreshDelegate
+    func iHAKTableRefreshShouldPerformTopRefresh(refreshView: iHAKTableRefresh) -> Bool {
+        return true
+    }
+    
+    func iHAKTableRefreshWillPerformTopRefresh(refreshView: iHAKTableRefresh) {
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(3.0) * Double(NSEC_PER_SEC)))
+        dispatch_after(delayTime, dispatch_get_main_queue()) {
+            refreshView.finishRefresh()
+        }
+    }
+    
+    func iHAKTableRefreshShouldPerformBottomRefresh(refreshView: iHAKTableRefresh) -> Bool {
+        return false
+    }
+    
+    func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh) {
+        refreshView.finishRefresh()
+    }
 }
 
