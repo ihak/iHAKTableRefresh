@@ -46,16 +46,16 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func iHAKTableRefreshWillPerformTopRefresh(refreshView: iHAKTableRefresh) {
         let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(3.0) * Double(NSEC_PER_SEC)))
         dispatch_after(delayTime, dispatch_get_main_queue()) {
-            refreshView.finishRefresh()
+            refreshView.finishRefresh(true)
         }
     }
     
     func iHAKTableRefreshShouldPerformBottomRefresh(refreshView: iHAKTableRefresh) -> Bool {
-        return false
+        return true
     }
     
     func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh) {
-        refreshView.finishRefresh()
+        refreshView.finishRefresh(false)
     }
 }
 

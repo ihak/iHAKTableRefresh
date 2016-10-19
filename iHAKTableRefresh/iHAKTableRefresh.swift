@@ -32,7 +32,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     }
     
     var bottomRefreshState = RefreshState.Normal {
-        willSet {
+        didSet {
             updateBottomView()
         }
     }
@@ -50,6 +50,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     
     private var topActivityIndicator: UIActivityIndicatorView?
     private var bottomActivityIndicator: UIActivityIndicatorView?
+    
+    private var bottomViewConstriant: NSLayoutConstraint?
+    
+    private var lastUpdated: NSDate?
     
     init(tableView: UITableView, delegate: iHAKTableRefreshDelegate) {
         super.init()
@@ -75,6 +79,11 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
             topViewEnabled = true
             bottomViewEnabled = true
             addTopView()
+            addBottomView()
+        }
+        
+        if refreshType == .Bottom || refreshType == .TopAndBottom {
+            self.tableView .addObserver(self, forKeyPath: "contentSize", options: .New, context: nil)
         }
     }
     
@@ -88,13 +97,13 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     
     func createTopView() -> UIView {
         let topView = UIView()
-        topView.backgroundColor = UIColor.redColor()
+        topView.backgroundColor = UIColor.whiteColor()
         topView.translatesAutoresizingMaskIntoConstraints = false
         topView.addConstraint(NSLayoutConstraint(item: topView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: topViewHeight))
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Last updated @ 12:34 AM"
+        label.text = "Pull to Refresh"
         topView.addSubview(label)
         topView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterX, relatedBy: .Equal, toItem: topView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
         topView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterY, relatedBy: .Equal, toItem: topView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
@@ -112,8 +121,39 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         return self.topView!
     }
     
-    func createBottomView() {
+    func addBottomView() {
+        let bottomView = createBottomView()
+        self.tableView.addSubview(bottomView)
+        self.tableView.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .Width, relatedBy: .Equal, toItem: self.tableView, attribute: .Width, multiplier: 1.0, constant: 0.0))
+        self.tableView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bottomView]|", options: NSLayoutFormatOptions(rawValue:0), metrics: nil, views: ["bottomView":bottomView]))
+        self.bottomViewConstriant = NSLayoutConstraint(item: bottomView, attribute: .Top, relatedBy: .Equal, toItem: self.tableView, attribute: .Bottom, multiplier: 1.0, constant: tableView.contentSize.height)
+        self.tableView.addConstraint(self.bottomViewConstriant!)
+    }
+    
+    func createBottomView() -> UIView {
+        let bottomView = UIView()
+        bottomView.backgroundColor = UIColor.redColor()
+        bottomView.translatesAutoresizingMaskIntoConstraints = false
+        bottomView.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: topViewHeight))
         
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Load More Data"
+        bottomView.addSubview(label)
+        bottomView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterX, relatedBy: .Equal, toItem: bottomView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
+        bottomView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterY, relatedBy: .Equal, toItem: bottomView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+        
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.hidesWhenStopped = true
+        bottomView.addSubview(activityIndicator)
+        bottomView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .Right, relatedBy: .Equal, toItem: label, attribute: .Left, multiplier: 1.0, constant: 0.0))
+        bottomView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: label, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+        
+        self.bottomLabel = label
+        self.bottomView = bottomView
+        self.bottomActivityIndicator = activityIndicator
+        return self.bottomView!
     }
     
     func updateTopRefreshState(state: RefreshState) {
@@ -154,7 +194,13 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
                 self.topLabel?.text = "Release to Refresh"
             }
             else if topRefreshState == .Normal {
-                topLabel.text = "Last updated @ 12:34 AM"
+                if let updatedAt = formattedLastUpdate() {
+                    topLabel.text = "Last updated on \(updatedAt)"
+                }
+                else {
+                    self.topLabel?.text = "Pull to Refresh"
+                }
+                
                 topActivityIndicator?.stopAnimating()
                 topLabel.hidden = false
                 
@@ -170,13 +216,33 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     }
     
     func updateBottomView() {
-        
+        if let bottomLabel = self.bottomLabel {
+            if bottomRefreshState == .Normal {
+                bottomLabel.text = "Load More Data"
+                bottomActivityIndicator?.stopAnimating()
+            }
+            else if bottomRefreshState == .Loading {
+                bottomLabel.text = "Loading"
+                bottomActivityIndicator?.startAnimating()
+            }
+        }
     }
     
-    func finishRefresh() {
+    /**
+     * Call this method to finish refreshing the table view.
+     *
+     * @param success A bool that tells if the refresh action was successful or not.
+     */
+    func finishRefresh(success: Bool) {
+        
+        if success && self.topRefreshState == .Loading {
+            lastUpdated = NSDate()
+        }
+        
         self.topRefreshState = .Normal
         self.bottomRefreshState = .Normal
     }
+    
     func shouldPerformTopRefresh() -> Bool {
         if let returnValue = delegate.iHAKTableRefreshShouldPerformTopRefresh?(self) {
             return returnValue
@@ -195,6 +261,15 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         UIView.animateWithDuration(duration) { 
             self.tableView.contentInset = insets
         }
+    }
+    
+    func formattedLastUpdate() -> String? {
+        if let date = lastUpdated {
+            let df = NSDateFormatter()
+            df.dateFormat = "dd MMM hh:mm a"
+            return df.stringFromDate(date)
+        }
+        return nil
     }
     
     /**
@@ -226,7 +301,8 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         if bottomRefreshState != .Loading && bottomViewEnabled {
             // If content is less than the scrollview frame
             if scrollView.contentSize.height <= scrollView.frame.height {
-                if (scrollView.contentOffset.y+defaultContentOffset) >= bottomViewHeight {
+                print("\((scrollView.contentOffset.y-defaultContentOffset)) >= \(bottomViewHeight))")
+                if (scrollView.contentOffset.y-defaultContentOffset) >= bottomViewHeight {
                     updateBottomRefreshState(.Pulled)
                 }
                 else {
@@ -254,9 +330,14 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         
         if bottomRefreshState == .Pulled && bottomViewEnabled {
             if shouldPerformBottomRefresh() {
+                self.delegate.iHAKTableRefreshWillPerformTopRefresh(self)
                 updateBottomRefreshState(.Loading)
             }
         }
+    }
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        self.bottomViewConstriant?.constant = self.tableView.contentSize.height
     }
 }
 
