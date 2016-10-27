@@ -41,6 +41,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     
     weak var tableView: UITableView!
     weak var delegate: iHAKTableRefreshDelegate!
+    weak var dataSource: iHAKTableRefreshDataSource!
     
     var topView: UIView?
     var bottomView: UIView?
@@ -63,8 +64,13 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         self.delegate = delegate
     }
     
-    convenience init(tableView: UITableView, refreshType: RefreshType, delegate: iHAKTableRefreshDelegate) {
+    convenience init(tableView: UITableView, delegate: iHAKTableRefreshDelegate, dataSource: iHAKTableRefreshDataSource?) {
         self.init(tableView: tableView, delegate: delegate)
+        self.dataSource = dataSource
+    }
+    
+    convenience init(tableView: UITableView, refreshType: RefreshType, delegate: iHAKTableRefreshDelegate, dataSource: iHAKTableRefreshDataSource?) {
+        self.init(tableView: tableView, delegate: delegate, dataSource: dataSource)
         self.refreshType = refreshType
         
         topViewEnabled = false
@@ -88,11 +94,30 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     }
     
     func addTopView() {
-        let topView = createTopView()
+        let topView = iHAKTableRefreshTopView()
+        topView.translatesAutoresizingMaskIntoConstraints = false
         self.tableView.addSubview(topView)
         self.tableView.addConstraint(NSLayoutConstraint(item: topView, attribute: .Width, relatedBy: .Equal, toItem: self.tableView, attribute: .Width, multiplier: 1.0, constant: 0.0))
         self.tableView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[topView]|", options: NSLayoutFormatOptions(rawValue:0), metrics: nil, views: ["topView":topView]))
         self.tableView.addConstraint(NSLayoutConstraint(item: topView, attribute: .Bottom, relatedBy: .Equal, toItem: self.tableView, attribute: .Top, multiplier: 1.0, constant: 0.0))
+    }
+    
+    func iHAKTableRefreshTopView() -> UIView {
+        if let topViewHeight = self.dataSource?.iHAKTableRefreshHeightForTopView?(self) {
+            self.topViewHeight = CGFloat(topViewHeight)
+        }
+        
+        var view: UIView
+        
+        if let topView = self.dataSource?.iHAKTableRefreshTopView?(self) {
+            view = topView
+            self.topView = view
+        }
+        else {
+            view = createTopView()
+        }
+        
+        return view
     }
     
     func createTopView() -> UIView {
@@ -122,7 +147,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     }
     
     func addBottomView() {
-        let bottomView = createBottomView()
+        let bottomView = iHAKTableRefreshBottomView()
         self.tableView.addSubview(bottomView)
         self.tableView.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .Width, relatedBy: .Equal, toItem: self.tableView, attribute: .Width, multiplier: 1.0, constant: 0.0))
         self.tableView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bottomView]|", options: NSLayoutFormatOptions(rawValue:0), metrics: nil, views: ["bottomView":bottomView]))
@@ -130,11 +155,29 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         self.tableView.addConstraint(self.bottomViewConstriant!)
     }
     
+    func iHAKTableRefreshBottomView() -> UIView {
+        if let bottomViewHeight = self.dataSource?.iHAKTableRefreshHeightForBottomView?(self) {
+            self.bottomViewHeight = CGFloat(bottomViewHeight)
+        }
+        
+        var view: UIView
+        
+        if let bottomView = self.dataSource?.iHAKTableRefreshBottomView?(self) {
+            view = bottomView
+            self.bottomView = view
+        }
+        else {
+            view = createBottomView()
+        }
+        
+        return view
+    }
+    
     func createBottomView() -> UIView {
         let bottomView = UIView()
         bottomView.backgroundColor = UIColor.redColor()
         bottomView.translatesAutoresizingMaskIntoConstraints = false
-        bottomView.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: topViewHeight))
+        bottomView.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: bottomViewHeight))
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -189,29 +232,27 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     }
 
     func updateTopView() {
-        if let topLabel = self.topLabel {
-            if topRefreshState == .Pulled {
-                self.topLabel?.text = "Release to Refresh"
+        if topRefreshState == .Pulled {
+            self.topLabel?.text = "Release to Refresh"
+        }
+        else if topRefreshState == .Normal {
+            if let updatedAt = formattedLastUpdate() {
+                self.topLabel?.text = "Last updated on \(updatedAt)"
             }
-            else if topRefreshState == .Normal {
-                if let updatedAt = formattedLastUpdate() {
-                    topLabel.text = "Last updated on \(updatedAt)"
-                }
-                else {
-                    self.topLabel?.text = "Pull to Refresh"
-                }
-                
-                topActivityIndicator?.stopAnimating()
-                topLabel.hidden = false
-                
-                if !self.tableView.dragging {
-                    animateScrollView(UIEdgeInsetsMake(-defaultContentOffset, 0.0, 0.0, 0.0), duration: 0.2)
-                }
+            else {
+                self.topLabel?.text = "Pull to Refresh"
             }
-            else if topRefreshState == .Loading {
-                topLabel.hidden = true
-                topActivityIndicator?.startAnimating()
+            
+            topActivityIndicator?.stopAnimating()
+            self.topLabel?.hidden = false
+            
+            if !self.tableView.dragging {
+                animateScrollView(UIEdgeInsetsMake(-defaultContentOffset, 0.0, 0.0, 0.0), duration: 0.2)
             }
+        }
+        else if topRefreshState == .Loading {
+            self.topLabel?.hidden = true
+            topActivityIndicator?.startAnimating()
         }
     }
     
@@ -365,4 +406,26 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
      Implement this method to perform any data refresh on tableview in case of bottom refresh.
      */
     func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh)
+}
+
+@objc protocol iHAKTableRefreshDataSource {
+    /**
+        Implement this method to provide a custom top view height.
+     */
+    @objc optional func iHAKTableRefreshHeightForTopView(refreshView: iHAKTableRefresh) -> Double
+    
+    /**
+        Implement this method to provide a custom top view.
+     */
+    @objc optional func iHAKTableRefreshTopView(refreshView: iHAKTableRefresh) -> UIView
+    
+    /**
+        Implement this method to provide a custom bottom view height.
+    */
+    @objc optional func iHAKTableRefreshHeightForBottomView(refreshView: iHAKTableRefresh) -> Double
+    
+    /**
+        Implement this mehtod to provide a custom bottom view.
+    */
+    @objc optional func iHAKTableRefreshBottomView(refreshView: iHAKTableRefresh) -> UIView
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, iHAKTableRefreshDelegate {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, iHAKTableRefreshDelegate, iHAKTableRefreshDataSource {
     let CellIdentifier = "CellIdentifier"
     var tableRefresh: iHAKTableRefresh!
     
@@ -18,7 +18,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         // Do any additional setup after loading the view, typically from a nib.
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: CellIdentifier)
         
-        tableRefresh = iHAKTableRefresh(tableView: tableView, refreshType: .TopAndBottom, delegate: self)
+        tableRefresh = iHAKTableRefresh(tableView: tableView, refreshType: .TopAndBottom, delegate: self, dataSource: self)
         tableRefresh.defaultContentOffset = -64.0
     }
 
@@ -57,5 +57,32 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh) {
         refreshView.finishRefresh(false)
     }
+    
+    //MARK: - iHAKTableRefreshDataSource
+    func iHAKTableRefreshHeightForTopView(refreshView: iHAKTableRefresh) -> Double {
+        return 100.0
+    }
+    
+    func iHAKTableRefreshTopView(refreshView: iHAKTableRefresh) -> UIView {
+        let topView = UIView()
+        topView.backgroundColor = UIColor.whiteColor()
+        topView.translatesAutoresizingMaskIntoConstraints = false
+        topView.addConstraint(NSLayoutConstraint(item: topView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: refreshView.topViewHeight))
+        
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Pull to Refresh"
+        topView.addSubview(label)
+        topView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterX, relatedBy: .Equal, toItem: topView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
+        topView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterY, relatedBy: .Equal, toItem: topView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+        
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.hidesWhenStopped = true
+        topView.addSubview(activityIndicator)
+        topView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: topView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
+        topView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: topView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+        
+        return topView
+    }
 }
-
