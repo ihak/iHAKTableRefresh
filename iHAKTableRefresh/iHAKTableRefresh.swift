@@ -137,6 +137,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Pull to Refresh"
+        label.font = UIFont.systemFontOfSize(14.0, weight: UIFontWeightLight)
         topView.addSubview(label)
         topView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterX, relatedBy: .Equal, toItem: topView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
         topView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterY, relatedBy: .Equal, toItem: topView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
@@ -183,13 +184,13 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     
     func createBottomView() -> UIView {
         let bottomView = UIView()
-        bottomView.backgroundColor = UIColor.redColor()
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         bottomView.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: bottomViewHeight))
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Load More Data"
+        label.font = UIFont.systemFontOfSize(14.0, weight: UIFontWeightLight)
         bottomView.addSubview(label)
         bottomView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterX, relatedBy: .Equal, toItem: bottomView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
         bottomView.addConstraint(NSLayoutConstraint(item: label, attribute: .CenterY, relatedBy: .Equal, toItem: bottomView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
@@ -198,7 +199,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.hidesWhenStopped = true
         bottomView.addSubview(activityIndicator)
-        bottomView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .Right, relatedBy: .Equal, toItem: label, attribute: .Left, multiplier: 1.0, constant: 0.0))
+        bottomView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .Right, relatedBy: .Equal, toItem: label, attribute: .Left, multiplier: 1.0, constant: -10.0))
         bottomView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: label, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
         
         self.bottomLabel = label
