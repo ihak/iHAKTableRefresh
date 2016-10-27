@@ -13,6 +13,10 @@ enum RefreshType {
     case Top, Bottom, TopAndBottom
 }
 
+@objc enum RefreshState: Int {
+    case Normal, Pulled, Loading
+}
+
 class iHAKTableRefresh: NSObject, UITableViewDelegate {
     var topViewHeight = CGFloat(60.0)
     var bottomViewHeight = CGFloat(40.0)
@@ -21,19 +25,23 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     var topViewEnabled = true
     var bottomViewEnabled = true
     
-    enum RefreshState {
-        case Normal, Pulled, Loading
-    }
-    
     var topRefreshState = RefreshState.Normal {
         didSet {
             updateTopView()
+            
+            if oldValue != topRefreshState {
+                self.iHAKTableRefreshDidChangeTopRefreshState()
+            }
         }
     }
     
     var bottomRefreshState = RefreshState.Normal {
         didSet {
             updateBottomView()
+            
+            if oldValue != bottomRefreshState {
+                self.iHAKTableRefreshDidChangeBottomRefreshState()
+            }
         }
     }
     
@@ -269,6 +277,14 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         }
     }
     
+    func iHAKTableRefreshDidChangeTopRefreshState() {
+        self.delegate?.iHAKTableRefreshDidChangeTopRefreshState?(self, state: self.topRefreshState)
+    }
+    
+    func iHAKTableRefreshDidChangeBottomRefreshState() {
+        self.delegate?.iHAKTableRefreshDidChangeBottomRefreshState?(self, state: self.bottomRefreshState)
+    }
+    
     /**
      * Call this method to finish refreshing the table view.
      *
@@ -406,6 +422,18 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
      Implement this method to perform any data refresh on tableview in case of bottom refresh.
      */
     func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh)
+    
+    /**
+     Implement this method if you are interested in the state of the top view.
+     iHAKTableRefresh has three states (Normal, Pulled and Loading) denoted by RefreshState enum.
+    */
+    @objc optional func iHAKTableRefreshDidChangeTopRefreshState(refreshView: iHAKTableRefresh, state: RefreshState)
+    
+    /**
+     Implement this method if you are interested in the state of the bottom view.
+     iHAKTableRefresh has three states (Normal, Pulled and Loading) denoted by RefreshState enum.
+     */
+    @objc optional func iHAKTableRefreshDidChangeBottomRefreshState(refreshView: iHAKTableRefresh, state: RefreshState)
 }
 
 @objc protocol iHAKTableRefreshDataSource {

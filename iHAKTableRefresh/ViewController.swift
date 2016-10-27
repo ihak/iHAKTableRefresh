@@ -58,6 +58,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         refreshView.finishRefresh(false)
     }
     
+    func iHAKTableRefreshDidChangeTopRefreshState(refreshView: iHAKTableRefresh, state: RefreshState) {
+        print("State changed")
+    }
+    
     //MARK: - iHAKTableRefreshDataSource
     func iHAKTableRefreshHeightForTopView(refreshView: iHAKTableRefresh) -> Double {
         return 100.0
