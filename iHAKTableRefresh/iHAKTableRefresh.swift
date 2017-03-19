@@ -101,6 +101,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         }
     }
     
+    deinit {
+        self.tableView.removeObserver(self, forKeyPath: #keyPath(UITableView.contentSize))
+    }
+    
     func addTopView() {
         let topView = iHAKTableRefreshTopView()
         topView.translatesAutoresizingMaskIntoConstraints = false
@@ -130,13 +134,13 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     
     func createTopView() -> UIView {
         let topView = UIView()
-        topView.backgroundColor = UIColor.white
+        topView.backgroundColor = UIColor.clear
         topView.translatesAutoresizingMaskIntoConstraints = false
         topView.addConstraint(NSLayoutConstraint(item: topView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1.0, constant: topViewHeight))
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Pull to Refresh"
+        label.text = NSLocalizedString("Pull to Refresh", comment: "")
         label.font = UIFont.systemFont(ofSize: 14.0, weight: UIFontWeightLight)
         topView.addSubview(label)
         topView.addConstraint(NSLayoutConstraint(item: label, attribute: .centerX, relatedBy: .equal, toItem: topView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
@@ -189,7 +193,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Load More Data"
+        label.text = NSLocalizedString("Load More Data", comment: "")
         label.font = UIFont.systemFont(ofSize: 14.0, weight: UIFontWeightLight)
         bottomView.addSubview(label)
         bottomView.addConstraint(NSLayoutConstraint(item: label, attribute: .centerX, relatedBy: .equal, toItem: bottomView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
@@ -242,14 +246,14 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
 
     func updateTopView() {
         if topRefreshState == .Pulled {
-            self.topLabel?.text = "Release to Refresh"
+            self.topLabel?.text = NSLocalizedString("Release to Refresh", comment: "")
         }
         else if topRefreshState == .Normal {
             if let updatedAt = formattedLastUpdate() {
-                self.topLabel?.text = "Last updated on \(updatedAt)"
+                self.topLabel?.text = String.init(format: NSLocalizedString("Last updated on %@", comment: ""), updatedAt)
             }
             else {
-                self.topLabel?.text = "Pull to Refresh"
+                self.topLabel?.text = NSLocalizedString("Pull to Refresh", comment: "")
             }
             
             topActivityIndicator?.stopAnimating()
@@ -268,14 +272,21 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     func updateBottomView() {
         if let bottomLabel = self.bottomLabel {
             if bottomRefreshState == .Normal {
-                bottomLabel.text = "Load More Data"
+                bottomLabel.text = NSLocalizedString("Load More Data", comment: "")
                 bottomActivityIndicator?.stopAnimating()
             }
             else if bottomRefreshState == .Loading {
-                bottomLabel.text = "Loading"
+                bottomLabel.text = NSLocalizedString("Loading", comment: "")
                 bottomActivityIndicator?.startAnimating()
             }
         }
+    }
+    
+    func disableBottomRefresh() {
+        self.refreshType = .Top
+        self.bottomView?.removeFromSuperview()
+        self.bottomViewEnabled = false
+        self.bottomRefreshState = .Normal
     }
     
     func iHAKTableRefreshDidChangeTopRefreshState() {
@@ -339,6 +350,11 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         // If success is true, refresh the last updated date
     }
     
+    //MARK: - UITableViewDelegate
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        delegate?.iHAKTableRefreshTable?(tableview: tableView, didSelectRow: indexPath)
+    }
+    
     //MARK: - UIScrollViewDelegate
     @objc func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard scrollView.isDragging else {
@@ -388,7 +404,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         
         if bottomRefreshState == .Pulled && bottomViewEnabled {
             if shouldPerformBottomRefresh() {
-                self.delegate.iHAKTableRefreshWillPerformTopRefresh(refreshView: self)
+                self.delegate.iHAKTableRefreshWillPerformBottomRefresh(refreshView: self)
                 updateBottomRefreshState(state: .Loading)
             }
         }
@@ -435,6 +451,11 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
      iHAKTableRefresh has three states (Normal, Pulled and Loading) denoted by RefreshState enum.
      */
     @objc optional func iHAKTableRefreshDidChangeBottomRefreshState(refreshView: iHAKTableRefresh, state: RefreshState)
+    
+    /**
+     Implement this method if you want to get UITableViewDelegate's didSelectRow method
+     */
+    @objc optional func iHAKTableRefreshTable(tableview: UITableView, didSelectRow atIndex: IndexPath)
 }
 
 @objc protocol iHAKTableRefreshDataSource {

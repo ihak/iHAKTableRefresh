@@ -99,7 +99,6 @@
 				TargetAttributes = {
 					E4DC08B51DB5ED37009B7F85 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = LDKYSWBM43;
 						LastSwiftMigration = 0800;
 					};
 				};
@@ -260,7 +259,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = LDKYSWBM43;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = iHAKTableRefresh/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.arpatech.iHAKTableRefresh;
@@ -273,7 +272,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = LDKYSWBM43;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = iHAKTableRefresh/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.arpatech.iHAKTableRefresh;

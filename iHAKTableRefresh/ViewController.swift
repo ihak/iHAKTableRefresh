@@ -53,7 +53,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func iHAKTableRefreshShouldPerformBottomRefresh(refreshView: iHAKTableRefresh) -> Bool {
-        return true
+        refreshView.disableBottomRefresh()
+        return false
     }
     
     func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh) {
