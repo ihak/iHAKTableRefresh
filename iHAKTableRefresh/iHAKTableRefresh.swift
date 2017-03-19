@@ -145,7 +145,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         topView.addSubview(label)
         topView.addConstraint(NSLayoutConstraint(item: label, attribute: .centerX, relatedBy: .equal, toItem: topView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         topView.addConstraint(NSLayoutConstraint(item: label, attribute: .centerY, relatedBy: .equal, toItem: topView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
-
+        
         let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.hidesWhenStopped = true
@@ -212,7 +212,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         return self.bottomView!
     }
     
-    func updateTopRefreshState(state: RefreshState) {
+    private func updateTopRefreshState(state: RefreshState) {
         topRefreshState = state
         switch state {
         case .Loading:
@@ -227,8 +227,8 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
             break
         }
     }
-
-    func updateBottomRefreshState(state: RefreshState) {
+    
+    private func updateBottomRefreshState(state: RefreshState) {
         bottomRefreshState = state
         switch state {
         case .Loading:
@@ -241,9 +241,9 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         case .Pulled:
             print("Bottom refresh state: Pulled")
             break
-        }        
+        }
     }
-
+    
     func updateTopView() {
         if topRefreshState == .Pulled {
             self.topLabel?.text = NSLocalizedString("Release to Refresh", comment: "")
@@ -282,11 +282,39 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         }
     }
     
+    /**
+     *  This method permanantly disables the bottom view.
+     *  it sets refreshtype to top only, sets bottom refrsh state to normal, removes bottom view and disables it.
+     */
+    
     func disableBottomRefresh() {
         self.refreshType = .Top
         self.bottomView?.removeFromSuperview()
         self.bottomViewEnabled = false
         self.bottomRefreshState = .Normal
+    }
+    
+    func hideBottomRefresh() {
+        self.bottomView?.isHidden = true
+    }
+    
+    func showBottomRefresh() {
+        self.bottomView?.isHidden = false
+    }
+    
+    /**
+     *  Call this method to manually trigger top refresh. This method
+     *  don't take into account topViewEnabled property. Nor it trigger the delegate 
+     *  shouldPerformTopRefresh.
+     */
+    
+    func triggerTopRefresh() {
+        // Scroll the view down to show top view
+        self.tableView.setContentOffset(CGPoint.init(x: 0.0, y: topViewHeight * -1.0), animated: true)
+        
+        // Trigger the delegate and change state to loading
+        self.delegate.iHAKTableRefreshWillPerformTopRefresh(refreshView: self)
+        updateTopRefreshState(state: .Loading)
     }
     
     func iHAKTableRefreshDidChangeTopRefreshState() {
@@ -327,7 +355,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     }
     
     func animateScrollView(insets: UIEdgeInsets, duration:TimeInterval) {
-        UIView.animate(withDuration: duration) { 
+        UIView.animate(withDuration: duration) {
             self.tableView.contentInset = insets
         }
     }
@@ -362,7 +390,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         }
         
         print("frame height: \(scrollView.frame.height)), content height: \(scrollView.contentSize.height), content offset: \(scrollView.contentOffset.y)")
-
+        
         if topRefreshState != .Loading && topViewEnabled {
             if (scrollView.contentOffset.y-defaultContentOffset) <= -topViewHeight {
                 updateTopRefreshState(state: .Pulled)
@@ -418,7 +446,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
 @objc protocol iHAKTableRefreshDelegate {
     /**
      Implement this method if you want to control when to refresh your view.
-     Return false if you don't want top refresh. This method is not get called if 
+     Return false if you don't want top refresh. This method is not get called if
      the property topViewEnabled is false.
      */
     @objc optional func iHAKTableRefreshShouldPerformTopRefresh(refreshView: iHAKTableRefresh) -> Bool
@@ -432,7 +460,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     
     /**
      Implement this method to perform any data refresh on the tableview in case of top refresh.
-    */
+     */
     func iHAKTableRefreshWillPerformTopRefresh(refreshView: iHAKTableRefresh)
     
     /**
@@ -443,7 +471,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     /**
      Implement this method if you are interested in the state of the top view.
      iHAKTableRefresh has three states (Normal, Pulled and Loading) denoted by RefreshState enum.
-    */
+     */
     @objc optional func iHAKTableRefreshDidChangeTopRefreshState(refreshView: iHAKTableRefresh, state: RefreshState)
     
     /**
@@ -460,22 +488,22 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
 
 @objc protocol iHAKTableRefreshDataSource {
     /**
-        Implement this method to provide a custom top view height.
+     Implement this method to provide a custom top view height.
      */
     @objc optional func iHAKTableRefreshHeightForTopView(refreshView: iHAKTableRefresh) -> Double
     
     /**
-        Implement this method to provide a custom top view.
+     Implement this method to provide a custom top view.
      */
     @objc optional func iHAKTableRefreshTopView(refreshView: iHAKTableRefresh) -> UIView
     
     /**
-        Implement this method to provide a custom bottom view height.
-    */
+     Implement this method to provide a custom bottom view height.
+     */
     @objc optional func iHAKTableRefreshHeightForBottomView(refreshView: iHAKTableRefresh) -> Double
     
     /**
-        Implement this mehtod to provide a custom bottom view.
-    */
+     Implement this mehtod to provide a custom bottom view.
+     */
     @objc optional func iHAKTableRefreshBottomView(refreshView: iHAKTableRefresh) -> UIView
 }

@@ -11,6 +11,10 @@ import UIKit
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, iHAKTableRefreshDelegate, iHAKTableRefreshDataSource {
 
     let CellIdentifier = "CellIdentifier"
+    let defaultNumberOfRows = 2
+    let additionalRows = 2
+    var numberOfRows = 0
+    
     var tableRefresh: iHAKTableRefresh!
     
     @IBOutlet weak var tableView: UITableView!
@@ -23,6 +27,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         tableRefresh.defaultContentOffset = -64.0
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        tableRefresh.triggerTopRefresh()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -30,7 +38,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     //MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -47,18 +55,27 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func iHAKTableRefreshWillPerformTopRefresh(refreshView: iHAKTableRefresh) {
         let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
+            self.numberOfRows = self.defaultNumberOfRows
+            self.tableView.reloadData()
+            refreshView.hideBottomRefresh()
             refreshView.finishRefresh(success: true)
         })
 
     }
     
     func iHAKTableRefreshShouldPerformBottomRefresh(refreshView: iHAKTableRefresh) -> Bool {
-        refreshView.disableBottomRefresh()
-        return false
+//        refreshView.disableBottomRefresh()
+        refreshView.showBottomRefresh()
+        return true
     }
     
     func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh) {
-        refreshView.finishRefresh(success: false)
+        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) { 
+            refreshView.finishRefresh(success: false)
+            self.numberOfRows += self.additionalRows
+            self.tableView.reloadData()
+        }
     }
     
     func iHAKTableRefreshDidChangeTopRefreshState(refreshView: iHAKTableRefresh, state: RefreshState) {
