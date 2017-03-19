@@ -11,8 +11,8 @@ import UIKit
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, iHAKTableRefreshDelegate, iHAKTableRefreshDataSource {
 
     let CellIdentifier = "CellIdentifier"
-    let defaultNumberOfRows = 2
-    let additionalRows = 2
+    let defaultNumberOfRows = 15
+    let additionalRows = 5
     var numberOfRows = 0
     
     var tableRefresh: iHAKTableRefresh!
@@ -20,6 +20,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = "iHAKTableRefresh"
         // Do any additional setup after loading the view, typically from a nib.
         tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: CellIdentifier)
         
@@ -53,11 +54,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func iHAKTableRefreshWillPerformTopRefresh(refreshView: iHAKTableRefresh) {
-        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
             self.numberOfRows = self.defaultNumberOfRows
             self.tableView.reloadData()
-            refreshView.hideBottomRefresh()
+//            refreshView.hideBottomRefresh()
             refreshView.finishRefresh(success: true)
         })
 
@@ -70,7 +71,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh) {
-        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(3 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: dispatchTime) { 
             refreshView.finishRefresh(success: false)
             self.numberOfRows += self.additionalRows

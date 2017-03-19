@@ -16,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F9E8FD51E7E77EE007A3BE3 /* 1lopba.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 1lopba.gif; sourceTree = "<group>"; };
 		E4DC08B61DB5ED37009B7F85 /* iHAKTableRefresh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iHAKTableRefresh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4DC08B91DB5ED37009B7F85 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E4DC08BB1DB5ED37009B7F85 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -57,6 +58,7 @@
 		E4DC08B81DB5ED37009B7F85 /* iHAKTableRefresh */ = {
 			isa = PBXGroup;
 			children = (
+				2F9E8FD51E7E77EE007A3BE3 /* 1lopba.gif */,
 				E4DC08B91DB5ED37009B7F85 /* AppDelegate.swift */,
 				E4DC08BB1DB5ED37009B7F85 /* ViewController.swift */,
 				E4DC08BD1DB5ED37009B7F85 /* Main.storyboard */,
