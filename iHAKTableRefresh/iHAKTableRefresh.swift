@@ -30,7 +30,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
             updateTopView()
             
             if oldValue != topRefreshState {
-                self.iHAKTableRefreshDidChangeTopRefreshState()
+                self.didChangeTopRefreshState()
             }
         }
     }
@@ -40,7 +40,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
             updateBottomView()
             
             if oldValue != bottomRefreshState {
-                self.iHAKTableRefreshDidChangeBottomRefreshState()
+                self.didChangeBottomRefreshState()
             }
         }
     }
@@ -64,6 +64,14 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
     
     private var lastUpdated: NSDate?
     
+    // MARK: - Initializers
+    
+    /// Default initializer. Initializes the instance with given tableview and delegate.
+    /// By default sets refresh type to .TopAndBottom i.e boht top and bottom refresh are enabled.
+    ///
+    /// - parameter tableView: UITableView instance you want to add refresh control to.
+    /// - parameter delegate:  An instance that implements iHAKTableRefreshDelegate.
+    
     init(tableView: UITableView, delegate: iHAKTableRefreshDelegate) {
         super.init()
         
@@ -72,10 +80,30 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         self.delegate = delegate
     }
     
+    /// Convenience initializer that takes and object that implements
+    /// iHAKTableRefreshDataSource as well along with iHAKTableRefreshDelegate.
+    ///
+    /// Use this method if you want to use your custom top and bottom views.
+    ///
+    /// - parameter tableView:  UITableView instance you want to add refresh control to.
+    /// - parameter delegate: An instance that implements iHAKTableRefreshDelegate.
+    /// - parameter dataSource: An instance that implements iHAKTableRefreshDataSource.
+    
     convenience init(tableView: UITableView, delegate: iHAKTableRefreshDelegate, dataSource: iHAKTableRefreshDataSource?) {
         self.init(tableView: tableView, delegate: delegate)
         self.dataSource = dataSource
     }
+    
+    /// Convenience initializer that allows you to choose the refresh type (Top|Bottom|TopAndBottom),
+    /// define delegate and datasource.
+    
+    /// Use this method if you want to choose from the available RereshType(s). Implement iHAKTableRefreshDataSource
+    /// if you want to provide your custom top or bottom views.
+    ///
+    /// - parameter tableView: UITableView instance you want to add refresh control to.
+    /// - parameter refreshType: Choose from top, bottom or top and bottom refresh types.
+    /// - parameter delegate: An instance that implements iHAKTableRefreshDelgate.
+    /// - parameter dataSource: An instance that implements iHAKTableRefreshDataSource.
     
     convenience init(tableView: UITableView, refreshType: RefreshType, delegate: iHAKTableRefreshDelegate, dataSource: iHAKTableRefreshDataSource?) {
         self.init(tableView: tableView, delegate: delegate, dataSource: dataSource)
@@ -105,8 +133,12 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         self.tableView.removeObserver(self, forKeyPath: #keyPath(UITableView.contentSize))
     }
     
-    func addTopView() {
-        let topView = iHAKTableRefreshTopView()
+    // MARK: - Top and bottom views
+    
+    /// Adds bottom view to the tableview.
+    
+    private func addTopView() {
+        let topView = getTopView()
         topView.translatesAutoresizingMaskIntoConstraints = false
         self.tableView.addSubview(topView)
         self.tableView.addConstraint(NSLayoutConstraint(item: topView, attribute: .width, relatedBy: .equal, toItem: self.tableView, attribute: .width, multiplier: 1.0, constant: 0.0))
@@ -114,7 +146,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         self.tableView.addConstraint(NSLayoutConstraint(item: topView, attribute: .bottom, relatedBy: .equal, toItem: self.tableView, attribute: .top, multiplier: 1.0, constant: 0.0))
     }
     
-    func iHAKTableRefreshTopView() -> UIView {
+    /// Gets a top view either by using datasource method or by creating a default one.
+    /// - returns: The created UIView
+    
+    private func getTopView() -> UIView {
         if let topViewHeight = self.dataSource?.iHAKTableRefreshHeightForTopView?(refreshView: self) {
             self.topViewHeight = CGFloat(topViewHeight)
         }
@@ -132,7 +167,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         return view
     }
     
-    func createTopView() -> UIView {
+    /// Creates and return the default top view.
+    /// - returns: The created UIView
+    
+    private func createTopView() -> UIView {
         let topView = UIView()
         topView.backgroundColor = UIColor.clear
         topView.translatesAutoresizingMaskIntoConstraints = false
@@ -159,8 +197,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         return self.topView!
     }
     
-    func addBottomView() {
-        let bottomView = iHAKTableRefreshBottomView()
+    /// Adds bottom view to the tableview.
+    
+    private func addBottomView() {
+        let bottomView = getBottomView()
         self.tableView.addSubview(bottomView)
         self.tableView.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .width, relatedBy: .equal, toItem: self.tableView, attribute: .width, multiplier: 1.0, constant: 0.0))
         self.tableView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[bottomView]|", options: NSLayoutFormatOptions(rawValue:0), metrics: nil, views: ["bottomView":bottomView]))
@@ -168,7 +208,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         self.tableView.addConstraint(self.bottomViewConstriant!)
     }
     
-    func iHAKTableRefreshBottomView() -> UIView {
+    /// Gets a bottom view either by using datasource method or by creating a default one.
+    /// - returns: The created UIView
+    
+    private func getBottomView() -> UIView {
         if let bottomViewHeight = self.dataSource?.iHAKTableRefreshHeightForBottomView?(refreshView: self) {
             self.bottomViewHeight = CGFloat(bottomViewHeight)
         }
@@ -186,7 +229,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         return view
     }
     
-    func createBottomView() -> UIView {
+    /// Creates and return the default bottom view.
+    /// - returns: The created UIView
+    
+    private func createBottomView() -> UIView {
         let bottomView = UIView()
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         bottomView.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1.0, constant: bottomViewHeight))
@@ -212,18 +258,19 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         return self.bottomView!
     }
     
+    //MARK: - Update methods
     private func updateTopRefreshState(state: RefreshState) {
         topRefreshState = state
         switch state {
         case .Loading:
-            print("Top refresh state: Loading")
+            //            print("Top refresh state: Loading")
             animateScrollView(insets: UIEdgeInsetsMake(topViewHeight-defaultContentOffset, 0.0, 0.0, 0.0), duration: 0.2)
             break
         case .Normal:
-            print("Top refresh state: Normal")
+            //            print("Top refresh state: Normal")
             break
         case .Pulled:
-            print("Top refresh state: Pulled")
+            //            print("Top refresh state: Pulled")
             break
         }
     }
@@ -232,19 +279,19 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         bottomRefreshState = state
         switch state {
         case .Loading:
-            print("Bottom refresh state: Loading")
+            //            print("Bottom refresh state: Loading")
             animateScrollView(insets: UIEdgeInsetsMake(0.0, 0.0, bottomViewHeight, 0.0), duration: 0.2)
             break
         case .Normal:
-            print("Bottom refresh state: Normal")
+            //            print("Bottom refresh state: Normal")
             break
         case .Pulled:
-            print("Bottom refresh state: Pulled")
+            //            print("Bottom refresh state: Pulled")
             break
         }
     }
     
-    func updateTopView() {
+    private func updateTopView() {
         if topRefreshState == .Pulled {
             self.topLabel?.text = NSLocalizedString("Release to Refresh", comment: "")
         }
@@ -269,7 +316,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         }
     }
     
-    func updateBottomView() {
+    private func updateBottomView() {
         if let bottomLabel = self.bottomLabel {
             if bottomRefreshState == .Normal {
                 bottomLabel.text = NSLocalizedString("Load More Data", comment: "")
@@ -282,10 +329,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         }
     }
     
-    /**
-     *  This method permanantly disables the bottom view.
-     *  it sets refreshtype to top only, sets bottom refrsh state to normal, removes bottom view and disables it.
-     */
+    //MARK: - Bottom view
+    
+    /// This method permanantly disables the bottom view.
+    /// it sets refreshtype to top only, sets bottom refrsh state to normal, removes bottom view and disables it.
     
     func disableBottomRefresh() {
         self.refreshType = .Top
@@ -294,19 +341,22 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         self.bottomRefreshState = .Normal
     }
     
+    /// Hides bottom refresh view. Call this method when you don't have more data to load.
+    /// Or you can call it at the start when the tableview is empty.
+    
     func hideBottomRefresh() {
         self.bottomView?.isHidden = true
     }
+    
+    /// Shows the bottom refresh view. Call this method when you have data to load.
     
     func showBottomRefresh() {
         self.bottomView?.isHidden = false
     }
     
-    /**
-     *  Call this method to manually trigger top refresh. This method
-     *  don't take into account topViewEnabled property. Nor it trigger the delegate 
-     *  shouldPerformTopRefresh.
-     */
+    /// Call this method to manually trigger top refresh. This method
+    /// don't take into account topViewEnabled property. Nor it trigger the delegate
+    /// shouldPerformTopRefresh.
     
     func triggerTopRefresh() {
         // Scroll the view down to show top view
@@ -317,65 +367,64 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         updateTopRefreshState(state: .Loading)
     }
     
-    func iHAKTableRefreshDidChangeTopRefreshState() {
+    private func didChangeTopRefreshState() {
         self.delegate?.iHAKTableRefreshDidChangeTopRefreshState?(refreshView: self, state: self.topRefreshState)
     }
     
-    func iHAKTableRefreshDidChangeBottomRefreshState() {
+    private func didChangeBottomRefreshState() {
         self.delegate?.iHAKTableRefreshDidChangeBottomRefreshState?(refreshView: self, state: self.bottomRefreshState)
     }
     
-    /**
-     * Call this method to finish refreshing the table view.
-     *
-     * @param success A bool that tells if the refresh action was successful or not.
-     */
+    
+    /// Call this method to finish refreshing the table view.
+    ///
+    /// - parameter success: A bool that tells if the refresh action was successful or not.
+    
     func finishRefresh(success: Bool) {
         
         if success && self.topRefreshState == .Loading {
             lastUpdated = NSDate()
         }
         
+        if self.topRefreshState == .Loading {
+            self.delegate?.iHAKTableRefreshDidCompleteTopRefresh?(refreshView: self)
+        }
+        
+        if self.bottomRefreshState == .Loading {
+            self.delegate?.iHAKTableRefreshDidCompleteBottomRefresh?(refreshView: self)
+        }
+        
         self.topRefreshState = .Normal
         self.bottomRefreshState = .Normal
     }
     
-    func shouldPerformTopRefresh() -> Bool {
+    private func shouldPerformTopRefresh() -> Bool {
         if let returnValue = delegate.iHAKTableRefreshShouldPerformTopRefresh?(refreshView: self) {
             return returnValue
         }
         return true
     }
     
-    func shouldPerformBottomRefresh() -> Bool {
+    private func shouldPerformBottomRefresh() -> Bool {
         if let returnValue = delegate.iHAKTableRefreshShouldPerformBottomRefresh?(refreshView: self) {
             return returnValue
         }
         return true
     }
     
-    func animateScrollView(insets: UIEdgeInsets, duration:TimeInterval) {
+    private func animateScrollView(insets: UIEdgeInsets, duration:TimeInterval) {
         UIView.animate(withDuration: duration) {
             self.tableView.contentInset = insets
         }
     }
     
-    func formattedLastUpdate() -> String? {
+    private func formattedLastUpdate() -> String? {
         if let date = lastUpdated {
             let df = DateFormatter()
             df.dateFormat = "dd MMM hh:mm a"
             return df.string(from: date as Date)
         }
         return nil
-    }
-    
-    /**
-     Call this method when you have finished loading the data.
-     */
-    func finishedLoading(success: Bool) {
-        // Change the refresh state to normal
-        // adjust the content size of the tableview
-        // If success is true, refresh the last updated date
     }
     
     //MARK: - UITableViewDelegate
@@ -389,7 +438,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
             return
         }
         
-        print("frame height: \(scrollView.frame.height)), content height: \(scrollView.contentSize.height), content offset: \(scrollView.contentOffset.y)")
+        //        print("frame height: \(scrollView.frame.height)), content height: \(scrollView.contentSize.height), content offset: \(scrollView.contentOffset.y)")
         
         if topRefreshState != .Loading && topViewEnabled {
             if (scrollView.contentOffset.y-defaultContentOffset) <= -topViewHeight {
@@ -403,7 +452,7 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         if bottomRefreshState != .Loading && bottomViewEnabled {
             // If content is less than the scrollview frame
             if scrollView.contentSize.height <= scrollView.frame.height {
-                print("\((scrollView.contentOffset.y-defaultContentOffset)) >= \(bottomViewHeight))")
+                //                print("\((scrollView.contentOffset.y-defaultContentOffset)) >= \(bottomViewHeight))")
                 if (scrollView.contentOffset.y-defaultContentOffset) >= bottomViewHeight {
                     updateBottomRefreshState(state: .Pulled)
                 }
@@ -479,6 +528,16 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
      iHAKTableRefresh has three states (Normal, Pulled and Loading) denoted by RefreshState enum.
      */
     @objc optional func iHAKTableRefreshDidChangeBottomRefreshState(refreshView: iHAKTableRefresh, state: RefreshState)
+    
+    /**
+    Implement this method to do extra work at the end of top refresh.
+    */
+    @objc optional func iHAKTableRefreshDidCompleteTopRefresh(refreshView: iHAKTableRefresh)
+
+    /**
+     Implement this method to do extra work at the end of bottom refresh.
+     */
+    @objc optional func iHAKTableRefreshDidCompleteBottomRefresh(refreshView: iHAKTableRefresh)
     
     /**
      Implement this method if you want to get UITableViewDelegate's didSelectRow method

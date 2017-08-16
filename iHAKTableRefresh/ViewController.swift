@@ -14,6 +14,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let defaultNumberOfRows = 15
     let additionalRows = 5
     var numberOfRows = 0
+    var maxNumberOfRows = 30
     
     var tableRefresh: iHAKTableRefresh!
     
@@ -58,24 +59,24 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
             self.numberOfRows = self.defaultNumberOfRows
             self.tableView.reloadData()
-//            refreshView.hideBottomRefresh()
             refreshView.finishRefresh(success: true)
         })
-
     }
     
     func iHAKTableRefreshShouldPerformBottomRefresh(refreshView: iHAKTableRefresh) -> Bool {
-//        refreshView.disableBottomRefresh()
-        refreshView.showBottomRefresh()
-        return true
+        if numberOfRows < maxNumberOfRows {
+            return true
+        }
+        return false
     }
     
     func iHAKTableRefreshWillPerformBottomRefresh(refreshView: iHAKTableRefresh) {
         let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: dispatchTime) { 
-            refreshView.finishRefresh(success: false)
             self.numberOfRows += self.additionalRows
             self.tableView.reloadData()
+            
+            refreshView.finishRefresh(success: false)
         }
     }
     
@@ -109,5 +110,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         topView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .centerY, relatedBy: .equal, toItem: topView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
         
         return topView
+    }
+    
+    func iHAKTableRefreshDidCompleteTopRefresh(refreshView: iHAKTableRefresh) {
+        refreshView.showBottomRefresh()
+    }
+    
+    func iHAKTableRefreshDidCompleteBottomRefresh(refreshView: iHAKTableRefresh) {
+        // If number of rows are less show the bottom view
+        // else hide it.
+        if numberOfRows < maxNumberOfRows {
+            refreshView.showBottomRefresh()
+        }
+        else {
+            refreshView.hideBottomRefresh()
+        }
     }
 }
