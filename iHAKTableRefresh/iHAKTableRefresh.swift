@@ -115,8 +115,10 @@ class iHAKTableRefresh: NSObject, UITableViewDelegate {
         switch refreshType {
         case .Top:
             topViewEnabled = true
+            addTopView()
         case .Bottom:
             bottomViewEnabled = true
+            addBottomView()
         case .TopAndBottom:
             topViewEnabled = true
             bottomViewEnabled = true
